@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>EComm-Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <!-- <link rel="shortcut icon" type="image/png" href="./src/images/icons/shopping-cart-48x48.png"> -->
+    <!-- <link rel="shortcut icon" type="image/icon" href="./src/images/icons/shopping_cart_48x48_square_white_border.ico"> -->
+    <link rel="shortcut icon" type="image/icon" href="src/images/icons/shopping_cart_LPS_icon.ico">
+
+    <!-- Material Design Lite StyleSheets -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.brown-orange.min.css">
+
+    <!-- App-specific stylesheets -->
+    <link rel="stylesheet" href="src/css/home.css">
+    <link rel="stylesheet" href="src/css/new_product.css">
+
+</head>
+
+<body>
+
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">EComm-Products</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation. We hide it in small screens. -->
+                <nav class="mdl-navigation">
+
+                    <button id="shopping-cart" class="mdl-button mdl-js-button mdl-button--icon shopping-cart-with-badge">
+                          <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="">shopping_cart</div>    
+                      </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect shopping-cart-list-styling" for="shopping-cart">
+
+                    </ul>
+
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">EComm-Products</span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">
+                    <i class='material-icons'>home</i>
+                    <div class='mdl-layout-spacer'></div>Home
+                </a>
+                <hr>
+                <a class="mdl-navigation__link" href="#">
+                    <i class='material-icons'>favorite</i>
+                    <div class='mdl-layout-spacer'></div>Favorites
+                </a>
+                <!-- <a class="mdl-navigation__link" href="">Link</a> -->
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                    SUBSCRIBE<i class='material-icons'>notifications</i>
+                </button>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- Your content goes here -->
+                <!-- Section holding top image -->
+                <div id="top-image">
+                    <img srcset="src/images/online-store-xtra-small-360x168.png 360w,
+        src/images/online-store-small-480x224.png 480w,
+        src/images/online-store-medium-720x335.png 720w,
+    src/images/online-store-standard-900x419.png 900w,
+    src/images/online-store-large-1100x513.png 1100w,
+    src/images/online-store-xtra-large-1350x629.png 1350w" sizes="(max-width: 480px) 360px,
+     (max-width: 600px) 480px,
+     (max-width: 900px) 720px,
+           (max-width: 1100px) 900px,
+           (max-width: 1350px) 1100px,
+           1350px"></img>
+                </div>
+
+                <!-- Section to display/showcase products.
+                     Part of the home page -->
+                <div id="product-showcase">
+                    <ul class="mdl-list">
+
+                    </ul>
+                </div>
+
+                <!-- Colored FAB button to add new product - Part of the home page -->
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored align-bottom-right">
+      <i class="material-icons">add</i>
+    </button>
+
+                <!-- Snackbar - To display messages across pages/screens -->
+                <div class="mdl-js-snackbar mdl-snackbar">
+                    <div class="mdl-snackbar__text"></div>
+                    <div class="mdl-snackbar__action" type="button"></div>
+                </div>
+
+                <!-- Product add form - Hidden by default and displayed upon clicking the '+' FAB -->
+                <form action="#">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" name="product-name" id="prod-name">
+                        <label class="mdl-textfield__label" for="prod-name">Name</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" name="product-price" id="prod-price">
+                        <label class="mdl-textfield__label" for="prod-price">Price</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" name="product-description" id="prod-description">
+                        <label class="mdl-textfield__label" for="prod-description">Description</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" name="product-image-url" id="prod-image-url">
+                        <label class="mdl-textfield__label" for="prod-image-url">Image-Url</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent form-submit-btn" type="submit">Add Product</button>
+                </form>
+
+                <!-- Close button for the form to cancel the product add
+                     Hidden by default and only displayed with the product add form. -->
+                <button class="mdl-button mdl-js-button mdl-button--icon form-close-btn">
+                    <i class="material-icons">clear</i>
+                  </button>
+
+                <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+                <script src="/src/js/app.js"></script>
+                <script src="/src/js/product_listing.js"></script>
+                <script src="/src/js/new_product.js"></script>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

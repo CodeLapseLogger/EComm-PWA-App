@@ -1,0 +1,30 @@
+.form-submit-btn {
+    display: block;
+    margin: 1.5rem auto;
+    height: 3.5rem;
+    font-size: 1.1rem;
+}
+
+.form-close-btn {
+    position: absolute;
+    left: -100vw;
+    margin: 1.5rem auto;
+    background-color: rgb(185, 168, 144);
+    color: rgb(143, 116, 81);
+    font-size: 6rem;
+    height: 4rem;
+    width: 4rem;
+}
+
+.form-close-btn>.material-icons {
+    /* The way the icon is being centered is to
+       "absolutely" position it at 50% from top
+        and 50% from left, then giving it equal
+        line-height and width, so, it starts at center.
+        But, icon is not centered. Then, the translate is
+        done to pull it half the height and width, back to
+        left and to top, to finally get icon centered. */
+    line-height: 2.15rem;
+    width: 2.15rem;
+    transform: translate(-1.075rem, -1.075rem);
+}
