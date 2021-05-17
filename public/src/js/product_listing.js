@@ -341,6 +341,23 @@ window.onload = (event) => {
                 actionText: 'Undo'
             };
             snackbarContainer.MaterialSnackbar.showSnackbar(data);
+
+            // Show the install banner for PWA
+            if (appInstallPrompt) {
+                appInstallPrompt.prompt();
+
+                appInstallPrompt.userChoice.then((endResult) => {
+                    console.log(`Result of app install user action: ${endResult.outcome}`);
+
+                    if (endResult.outcome === 'dismissed') {
+                        console.log('User cancelled the PWA install !');
+                    } else {
+                        console.log('User has installed the PWA !');
+                    }
+                });
+
+                appInstallPrompt = null;
+            }
         };
 
         // Creating button for marking product as a favorite
