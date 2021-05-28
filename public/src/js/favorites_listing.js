@@ -42,7 +42,7 @@ window.onload = (event) => {
 
             let emptyCartElement = document.createElement('li');
             emptyCartElement.className = 'mdl-menu__item';
-            emptyCartElement.style.backgroundImage = 'url("src/images/empty-cart.jpg")';
+            emptyCartElement.style.backgroundImage = 'url("/src/images/empty-cart.jpg")';
             emptyCartElement.style.backgroundColor = 'rgb(143, 116, 81)';
             emptyCartElement.style.backgroundPosition = 'center';
             emptyCartElement.style.backgroundRepeat = 'no-repeat';
@@ -137,7 +137,6 @@ window.onload = (event) => {
                 shoppingCartList.appendChild(cartItemElement);
             }
 
-
             let totalCartItemCostElement = document.createElement('li');
             totalCartItemCostElement.className = 'mdl-menu__item';
             let totalCostTextContentElement = document.createElement('p');
@@ -175,12 +174,11 @@ window.onload = (event) => {
         }
     };
 
-
     if (productList.display === 'none') {
         productList.display = 'block';
     }
 
-    for (let product of products.values()) {
+    for (let product of favoriteProducts.values()) {
         // List item element inside unrodered list element (<ul>)
         let productListItem = document.createElement('li');
         // let productIdAsClass = 'p-' + product.id;
@@ -312,22 +310,6 @@ window.onload = (event) => {
                 actionText: 'Undo'
             };
             snackbarContainer.MaterialSnackbar.showSnackbar(data);
-
-            // Show the app install banner here
-            if (appInstallPrompt) {
-                appInstallPrompt.prompt();
-
-                appInstallPrompt.userChoice.then((endResult) => {
-                    console.log(`User's app install choice: ${endResult.outcome}`);
-                    if (endResult.outcome === 'dismissed') {
-                        console.log(`User doesn't want to install the app !`);
-                    } else {
-                        console.log(`User installed the app !`);
-                    }
-                });
-
-                appInstallPrompt = null;
-            }
         };
 
         // Creating button for marking product as a favorite
@@ -403,29 +385,73 @@ window.onload = (event) => {
         productList.appendChild(productListItem);
     }
 
-    if (products.size === 0) {
+    if (favoriteProducts.size === 0) {
         productList.display = 'none';
+        let emptyProductCatalogMsgElement_1 = document.createElement('p');
+        emptyProductCatalogMsgElement_1.innerHTML = 'No favorites !';
+        emptyProductCatalogMsgElement_1.classList.add('empty-msg-style');
+        emptyProductCatalogMsgElement_1.style.color = '#75543d';
+        emptyProductCatalogMsgElement_1.style.position = 'relative';
+        emptyProductCatalogMsgElement_1.style.top = '1rem';
 
-        let emptyProductCatalogMsgElement = document.createElement('p');
-        emptyProductCatalogMsgElement.innerHTML = 'No products !</br> \
-                                                   Use <i class="material-icons circle-border-with-background">add</i> button to add.';
-        emptyProductCatalogMsgElement.classList.add('empty-msg-style', 'empty-store-msg-position');
-        emptyProductCatalogMsgElement.style.background = 'grey';
-        emptyProductCatalogMsgElement.style.opacity = '90%';
-        emptyProductCatalogMsgElement.style.position = 'relative';
-        emptyProductCatalogMsgElement.style.top = '7rem';
-        emptyProductCatalogMsgElement.style.maxWidth = '40rem';
-        emptyProductCatalogMsgElement.style.margin = '0 auto';
-        emptyProductCatalogMsgElement.style.borderColor = 'grey';
+        let emptyProductCatalogMsgElement_2 = document.createElement('p');
+        emptyProductCatalogMsgElement_2.innerHTML = 'Add from the home page';
+        emptyProductCatalogMsgElement_2.classList.add('empty-msg-style');
+        emptyProductCatalogMsgElement_2.style.color = '#75543d';
+        emptyProductCatalogMsgElement_2.style.position = 'relative';
+        emptyProductCatalogMsgElement_2.style.top = '1rem';
 
-        productListContainer.style.minHeight = '25rem';
-        productListContainer.style.height = '30rem';
-        productListContainer.style.maxHeight = '60rem';
-        productListContainer.appendChild(emptyProductCatalogMsgElement);
-        productListContainer.style.backgroundImage = 'url("/src/images/empty-store.jpg")';
-        productListContainer.style.backgroundPosition = 'center';
-        productListContainer.style.backgroundRepeat = 'no-repeat';
-        productListContainer.style.backgroundSize = 'cover';
+        productListContainer.style.textAlign = 'center';
+        productListContainer.style.display = 'flex';
+        productListContainer.style.flexDirection = 'column';
+        productListContainer.style.alignItems = 'center';
+        // productListContainer.style.position = 'relative';
+        // productListContainer.style.top = '2rem!important';
+
+        let heartsClusterElement = document.createElement('div');
+        heartsClusterElement.style.display = 'inline-block';
+        heartsClusterElement.style.position = 'relative';
+        heartsClusterElement.style.top = '1rem';
+
+        let favoriteIconElement = document.createElement('i');
+        favoriteIconElement.className = 'material-icons';
+        favoriteIconElement.textContent = 'favorite';
+        favoriteIconElement.style.fontSize = '5rem';
+        favoriteIconElement.style.color = '#b48868';
+        favoriteIconElement.style.position = 'relative';
+        favoriteIconElement.style.left = '30%';
+
+
+        let favoriteIconElement2 = document.createElement('i');
+        favoriteIconElement2.className = 'material-icons';
+        favoriteIconElement2.textContent = 'favorite';
+        favoriteIconElement2.style.fontSize = '5rem';
+        favoriteIconElement2.style.color = '#956745';
+        favoriteIconElement2.style.position = 'relative';
+
+
+        let favoriteIconElement3 = document.createElement('i');
+        favoriteIconElement3.className = 'material-icons';
+        favoriteIconElement3.textContent = 'favorite';
+        favoriteIconElement3.style.fontSize = '5rem';
+        favoriteIconElement3.style.color = '#75543d';
+        favoriteIconElement3.style.position = 'relative';
+        favoriteIconElement3.style.right = '30%';
+
+
+        componentHandler.upgradeElement(favoriteIconElement);
+        componentHandler.upgradeElement(favoriteIconElement2);
+        componentHandler.upgradeElement(favoriteIconElement3);
+
+        heartsClusterElement.appendChild(favoriteIconElement);
+        heartsClusterElement.appendChild(favoriteIconElement2);
+        heartsClusterElement.appendChild(favoriteIconElement3);
+
+        productListContainer.appendChild(emptyProductCatalogMsgElement_1);
+        productListContainer.appendChild(heartsClusterElement);
+        productListContainer.appendChild(emptyProductCatalogMsgElement_2);
+
+        // productListContainer.style.backgroundImage = 'url("/src/images/empty-store.jpg")';
 
     }
 };
