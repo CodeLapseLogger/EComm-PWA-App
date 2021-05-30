@@ -4,40 +4,40 @@
 // Will soon be replaced by backend storage on a 
 // remote server.
 let products = new Map();
-// products.set('1', {
-//     id: "1",
-//     name: "Shoes",
-//     imageUrl: "/src/images/products/shoes.jpg",
-//     price: "$79.99",
-//     description: "Sporty shoes for your casual wear !"
-// });
+products.set('1', {
+    id: "1",
+    name: "Shoes",
+    imageUrl: "/src/images/products/shoes.jpg",
+    price: "$79.99",
+    description: "Sporty shoes for your casual wear !"
+});
 
-// products.set('2', {
-//     id: "2",
-//     name: "Sunglasses",
-//     imageUrl: "/src/images/products/sunglasses.jpg",
-//     price: "$135.00",
-//     description: "Cool shades for a sunny day !"
-// });
+products.set('2', {
+    id: "2",
+    name: "Sunglasses",
+    imageUrl: "/src/images/products/sunglasses.jpg",
+    price: "$135.00",
+    description: "Cool shades for a sunny day !"
+});
 
-// products.set('3', {
-//     id: "3",
-//     name: "Retro Camera",
-//     imageUrl: "/src/images/products/retro_camera.jpg",
-//     price: "$220.00",
-//     description: "Capture memories - Retro Styleee..."
-// });
+products.set('3', {
+    id: "3",
+    name: "Retro Camera",
+    imageUrl: "/src/images/products/retro_camera.jpg",
+    price: "$220.00",
+    description: "Capture memories - Retro Styleee..."
+});
 
 
 let shoppingCartProducts = new Map();
 let favoriteProducts = new Map();
-// favoriteProducts.set('1', {
-//     id: "1",
-//     name: "Shoes",
-//     imageUrl: "/src/images/products/shoes.jpg",
-//     price: "$79.99",
-//     description: "Sporty shoes for your casual wear !"
-// });
+favoriteProducts.set('1', {
+    id: "1",
+    name: "Shoes",
+    imageUrl: "/src/images/products/shoes.jpg",
+    price: "$79.99",
+    description: "Sporty shoes for your casual wear !"
+});
 
 // Register service worker
 if ('serviceWorker' in navigator) {

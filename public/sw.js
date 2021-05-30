@@ -1,7 +1,17 @@
+let CACHE_VERSION = {
+    STATIC: '1',
+    DYNAMIC: '1'
+}
+
+let CACHE_LIST = {
+    STATIC_CACHE: `static-assets-${CACHE_VERSION.STATIC}`,
+    DYNAMIC_CACHE: `dynamic-assets-${CACHE_VERSION.DYNAMIC}`
+}
+
 self.addEventListener('install', (event) => {
 
     event.waitUntil(
-        caches.open('static-assets')
+        caches.open(CACHE_LIST.STATIC_CACHE)
         .then((cache) => {
             return cache.addAll([
                 '/',
@@ -28,7 +38,18 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
     console.log('[Service Worker Log] Service worker installed !');
     console.log('[Service Worker Log] Activating service worker...');
-    event.waitUntil(clients.claim());
+    self.clients.claim();
+    event.waitUntil(
+        caches.keys()
+        .then((cacheNameList) => {
+            return Promise.all(cacheNameList.map((cacheName) => {
+                if (cacheName !== CACHE_LIST.STATIC_CACHE && cacheName !== CACHE_LIST.DYNAMIC_CACHE) {
+                    console.log(`Deleting cache: ${cacheName}`);
+                    return caches.delete(cacheName);
+                }
+            }));
+        })
+    );
 });
 
 self.addEventListener('fetch', (event) => {
@@ -40,6 +61,13 @@ self.addEventListener('fetch', (event) => {
                 return response;
             } else {
                 return fetch(event.request)
+                    .then((res) => {
+                        caches.open(CACHE_LIST.DYNAMIC_CACHE)
+                            .then((cache) => {
+                                cache.put(event.request, res.clone());
+                                return res;
+                            })
+                    })
                     .catch((err) => {
                         return caches.match('/offline/index.html');
                     });
