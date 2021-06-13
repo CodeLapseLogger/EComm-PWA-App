@@ -235,8 +235,22 @@ window.onload = (event) => {
         let cardElementSaveAction = document.createElement('a');
         cardElementSaveAction.title = 'Save for offline access';
         cardElementSaveAction.className = 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect';
-        let cardElementSaveActionText = document.createTextNode('SAVE');
-        cardElementSaveAction.appendChild(cardElementSaveActionText);
+        cardElementSaveAction.textContent = 'SAVE';
+        cardElementSaveAction.fontWeight = 'bold';
+        cardElementSaveAction.style.backgroundColor = 'orange';
+        cardElementSaveAction.style.color = 'white';
+
+        let saveBtnIcon = document.createElement('i');
+        saveBtnIcon.className = 'material-icons';
+        saveBtnIcon.textContent = 'save';
+        saveBtnIcon.style.backgroundColor = 'orange';
+        saveBtnIcon.style.color = 'white';
+        saveBtnIcon.style.padding = '0 0 0 0.5rem';
+        saveBtnIcon.style.fontSize = '1.3rem';
+        cardElementSaveAction.appendChild(saveBtnIcon);
+
+        /* CLICK EVENT HANDLER FOR THE SAVE BUTTON GOES HERE */
+
         // componentHandler.upgradeElement(cardElementSaveAction);
         cardElementActions.appendChild(cardElementSaveAction);
 
