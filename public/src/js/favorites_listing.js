@@ -3,7 +3,7 @@ let productList = document.querySelector(".mdl-list");
 console.log(`productList element: $productList`);
 
 function isFavorite(productEntry) {
-    return favoriteProducts.has(productEntry.id);
+    return isItemInLocalStorageCollection(COLLECTION_NAMES.FAVORITES, productEntry.id);
 }
 
 let shoppingCartWithBadge = document.querySelector('.shopping-cart-with-badge > .mdl-badge');
@@ -11,10 +11,12 @@ let shoppingCartList = document.querySelector('.mdl-menu');
 
 window.onload = (event) => {
 
-    shoppingCartWithBadge.setAttribute('data-badge', `${shoppingCartProducts.size}`);
+    let currentShoppingCartCollectionSize = getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
+
+    shoppingCartWithBadge.setAttribute('data-badge', `${currentShoppingCartCollectionSize}`);
     shoppingCartWithBadge.onclick = (event) => {
-        console.log(`Shopping cart event: cart length - ${shoppingCartProducts.size}`);
-        if (shoppingCartProducts.size === 0) {
+        console.log(`Shopping cart event: cart length - ${currentShoppingCartCollectionSize}`);
+        if (currentShoppingCartCollectionSize === 0) {
             shoppingCartList.innerHTML = "";
 
             if (shoppingCartList.classList.contains('resize-non-empty-shopping-cart')) {
@@ -78,7 +80,9 @@ window.onload = (event) => {
             shoppingCartList.style.overflowX = 'scroll';
             shoppingCartList.style.overflowY = 'scroll';
 
-            for (let shoppingCartItem of shoppingCartProducts.values()) {
+            let currentShoppingCartCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
+
+            for (let shoppingCartItem of Object.values(currentShoppingCartCollectionData)) {
                 let cartItemElement = document.createElement('li');
                 cartItemElement.className = 'mdl-menu__item';
                 cartItemElement.style.display = 'flex';
@@ -143,7 +147,7 @@ window.onload = (event) => {
             totalCostTextContentElement.className = 'total-cart-item-cost';
             let totalCost = 0.00;
 
-            shoppingCartProducts.forEach((prodData, prodKey) => {
+            Object.values(currentShoppingCartCollectionData).forEach((prodData) => {
                 let prodPriceAsString = prodData.price.substring(1);
                 let prodPriceAsInt = Number.parseFloat(prodPriceAsString);
 
@@ -178,7 +182,9 @@ window.onload = (event) => {
         productList.display = 'block';
     }
 
-    for (let product of favoriteProducts.values()) {
+    let currentFavoritesCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.FAVORITES);
+
+    for (let product of Object.values(currentFavoritesCollectionData)) {
         // List item element inside unrodered list element (<ul>)
         let productListItem = document.createElement('li');
         // let productIdAsClass = 'p-' + product.id;
@@ -276,8 +282,8 @@ window.onload = (event) => {
             let productDataCopy = {};
             // console.log(`productDataCopy keys of ${product.name}: ${Object.keys(productDataCopy)}`);
             // console.log(`productDataCopy values of ${product.name}: ${Object.values(productDataCopy)}`);
-            if (shoppingCartProducts.has(product.id)) {
-                productDataCopy = shoppingCartProducts.get(product.id);
+            if (isItemInLocalStorageCollection(COLLECTION_NAMES.SHOPPING_CART, product.id)) {
+                productDataCopy = getItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, product.id);
 
                 let updatedOrderedQuantityAsInt = productDataCopy.orderedQuantity + 1;
                 productDataCopy.orderedQuantity = updatedOrderedQuantityAsInt;
@@ -288,24 +294,26 @@ window.onload = (event) => {
             }
 
             // shoppingCartProducts.delete(product.id);
-            shoppingCartProducts.set(product.id, productDataCopy);
-            shoppingCartWithBadge.setAttribute('data-badge', `${shoppingCartProducts.size}`);
+            addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, product.id, productDataCopy);
+            shoppingCartWithBadge.setAttribute('data-badge', `${getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART)}`);
 
             console.log('Shopping cart after product push: ');
-            shoppingCartProducts.forEach((prodData, prodId) => console.log(`${prodData['name']} `));
+            let updatedShoppingCartCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
+            Object.values(updatedShoppingCartCollectionData)
+                .forEach((prodData) => console.log(`${prodData['name']} `));
             // Fetch updated data from the shopping cart Map data stucture
-            let updatedProductData = shoppingCartProducts.get(product.id);
+            let updatedProductData = getItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, product.id);
 
             let snackbarContainer = document.querySelector('.mdl-snackbar');
             let data = {
                 message: `'${updatedProductData.name}' added to the cart - Quantity : ${updatedProductData.orderedQuantity}`,
                 timeout: 3000,
                 actionHandler: (actionButtonClickEvent) => {
-                    let isProductPopped = shoppingCartProducts.delete(updatedProductData.id);
+                    let isProductPopped = removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, updatedProductData.id);
                     let poppedProductSnackbarData = {};
 
                     if (isProductPopped) {
-                        shoppingCartWithBadge.setAttribute('data-badge', `${shoppingCartProducts.size}`);
+                        shoppingCartWithBadge.setAttribute('data-badge', `${getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART)}`);
 
                         poppedProductSnackbarData = {
                             message: `Removed item '${updatedProductData.name}' from the shopping cart !`,
@@ -343,11 +351,18 @@ window.onload = (event) => {
         favoriteButton.onclick = (event) => {
 
             // Toggle the current marked state of product's favorite button 
-            prodMarkedAsFavorite ? favoriteProducts.delete(product.id) : favoriteProducts.set(product.id, product);
-            favoriteButton.querySelector('.material-icons').textContent = prodMarkedAsFavorite ? 'favorite_border' : 'favorite';
+            prodMarkedAsFavorite ?
+                removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.FAVORITES, product.id) :
+                addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.FAVORITES, product.id, product);
+
+            favoriteButton.querySelector('.material-icons').textContent = prodMarkedAsFavorite ?
+                'favorite_border' :
+                'favorite';
 
             console.log('Favorites after product push: ');
-            favoriteProducts.forEach((prodId, prodData) => console.log(`${prodData['name']}`));
+            let currentFavoriteCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.FAVORITES);
+            Object.values(currentFavoriteCollectionData).
+            forEach((prodData) => console.log(`${prodData['name']}`));
 
             // Show snackbar
             let snackbarContainer = document.querySelector('.mdl-snackbar');
@@ -356,8 +371,13 @@ window.onload = (event) => {
                 timeout: 3000, // in milliseconds
                 actionHandler: (actionButtonClickEvent) => {
                     // Restore the toggled state
-                    prodMarkedAsFavorite ? favoriteProducts.set(product.id, product) : favoriteProducts.delete(product.id);
-                    favoriteButton.querySelector('.material-icons').textContent = prodMarkedAsFavorite ? 'favorite' : 'favorite_border';
+                    prodMarkedAsFavorite ?
+                        addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.FAVORITES, product.id, product) :
+                        removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.FAVORITES, product.id);
+
+                    favoriteButton.querySelector('.material-icons').textContent = prodMarkedAsFavorite ?
+                        'favorite' :
+                        'favorite_border';
 
                     let undoActionData = {};
 
@@ -399,7 +419,7 @@ window.onload = (event) => {
         productList.appendChild(productListItem);
     }
 
-    if (favoriteProducts.size === 0) {
+    if (getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.FAVORITES) === 0) {
         productList.display = 'none';
         let emptyProductCatalogMsgElement_1 = document.createElement('p');
         emptyProductCatalogMsgElement_1.innerHTML = 'No favorites !';
