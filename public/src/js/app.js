@@ -46,7 +46,7 @@ let favoriteProducts = {
 let COLLECTION_NAMES = {
     PRODUCTS: 'products',
     FAVORITES: 'favorites',
-    SHOPPING_CART: 'shopping-cart'
+    SHOPPING_CART: 'shopping-cart',
 };
 
 // Add Collection to local storage
@@ -134,6 +134,7 @@ addCollectionToLocalStorage(
     (currentShoppingCartCollectionData) ?
     currentShoppingCartCollectionData : {}
 );
+
 
 
 

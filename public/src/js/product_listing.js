@@ -256,7 +256,7 @@ window.onload = (event) => {
         saveBtnIcon.style.fontSize = '1.3rem';
         cardElementSaveAction.appendChild(saveBtnIcon);
 
-        /* CLICK EVENT HANDLER FOR THE SAVE BUTTON GOES HERE */
+        /* CLICK EVENT HANDLER FOR THE SAVE BUTTON */
 
         // componentHandler.upgradeElement(cardElementSaveAction);
         cardElementActions.appendChild(cardElementSaveAction);
