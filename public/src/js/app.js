@@ -47,6 +47,7 @@ let COLLECTION_NAMES = {
     PRODUCTS: 'products',
     FAVORITES: 'favorites',
     SHOPPING_CART: 'shopping-cart',
+    SAVED_FOR_LATER: 'saved-for-later'
 };
 
 // Add Collection to local storage
@@ -113,6 +114,8 @@ function removeItemFromCollectionInLocalStorage(collectionName, productId) {
 let currentProductCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.PRODUCTS);
 let currentFavoritesCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.FAVORITES);
 let currentShoppingCartCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
+let currentSavedForLaterCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SAVED_FOR_LATER);
+
 
 
 addCollectionToLocalStorage(
@@ -133,6 +136,12 @@ addCollectionToLocalStorage(
     COLLECTION_NAMES.SHOPPING_CART,
     (currentShoppingCartCollectionData) ?
     currentShoppingCartCollectionData : {}
+);
+
+addCollectionToLocalStorage(
+    COLLECTION_NAMES.SAVED_FOR_LATER,
+    (currentSavedForLaterCollectionData) ?
+    currentSavedForLaterCollectionData : {}
 );
 
 

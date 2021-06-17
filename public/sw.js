@@ -1,11 +1,12 @@
 let CACHE_VERSION = {
-    STATIC: '8',
-    DYNAMIC: '5'
+    STATIC: '13',
+    DYNAMIC: '10'
 }
 
 let CACHE_LIST = {
     STATIC_CACHE: `static-assets-${CACHE_VERSION.STATIC}`,
-    DYNAMIC_CACHE: `dynamic-assets-${CACHE_VERSION.DYNAMIC}`
+    DYNAMIC_CACHE: `dynamic-assets-${CACHE_VERSION.DYNAMIC}`,
+    SAVED_FOR_LATER: 'saved-for-later'
 }
 
 let STATIC_RESOURCE_LIST = [
@@ -45,7 +46,9 @@ self.addEventListener('activate', (event) => {
         caches.keys()
         .then((cacheNameList) => {
             return Promise.all(cacheNameList.map((cacheName) => {
-                if (cacheName !== CACHE_LIST.STATIC_CACHE && cacheName !== CACHE_LIST.DYNAMIC_CACHE) {
+                if (cacheName !== CACHE_LIST.STATIC_CACHE &&
+                    cacheName !== CACHE_LIST.DYNAMIC_CACHE &&
+                    cacheName !== CACHE_LIST.SAVED_FOR_LATER) {
                     console.log(`Deleting cache: ${cacheName}`);
                     return caches.delete(cacheName);
                 }

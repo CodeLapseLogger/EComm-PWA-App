@@ -6,6 +6,72 @@ function isFavorite(productEntry) {
     return isItemInLocalStorageCollection(COLLECTION_NAMES.FAVORITES, productEntry.id);
 }
 
+// Method with logic to prepare data for snackbar display
+function createSnackbarData(snackbarRelatedData, resourceData) {
+    let data = {
+        message: snackbarRelatedData.message,
+        timeout: snackbarRelatedData.timeout,
+        actionHandler: (actionBtnClickEvnt) => {
+
+            let snackbarData = {};
+
+            // let isSavedProdDeleted = prodsSavedForLater.delete(product.id);
+            try {
+                if (snackbarRelatedData.actionHandlerData.undoActionMethodRef === removeProductItemFromLocalStorageCollection) {
+                    resourceData.cacheRef.delete(resourceData.resource);
+                    snackbarRelatedData.actionHandlerData.undoActionMethodRef(snackbarRelatedData.actionHandlerData.localStorageCollectionName, snackbarRelatedData.actionHandlerData.productId);
+                } else {
+                    resourceData.cacheRef.add(resourceData.resource);
+                    snackbarRelatedData.actionHandlerData.undoActionMethodRef(snackbarRelatedData.actionHandlerData.localStorageCollectionName, snackbarRelatedData.actionHandlerData.productId, snackbarRelatedData.actionHandlerData.productData);
+                }
+
+                snackbarData = {
+                    message: snackbarRelatedData.actionHandlerData.undoSuccessMsg,
+                    timeout: snackbarRelatedData.timeout
+                };
+            } catch (err) {
+                snackbarData = {
+                    message: snackbarRelatedData.actionHandlerData.undoFailureMsg,
+                    timeout: snackbarRelatedData.timeout
+                }
+            } finally {
+                snackbarContainer.MaterialSnackbar.showSnackbar(snackbarData);
+            }
+        },
+        actionText: snackbarRelatedData.actionLabel
+    };
+    return data;
+}
+
+// Method with logic to add/remove a product related entries from cache and localStorage
+// and accordingly display the success/failure message in a snackbar.
+function cacheAddRemoveAndUndoWithSnackbar(isAdd, resourceDataPackage, snackbarDataPackage) {
+
+    if (isAdd) {
+        resourceDataPackage.cacheRef.add(resourceDataPackage.resource)
+            .then(() => {
+                let snackbarContainer = document.querySelector('.mdl-snackbar');
+                let dataForSnackbar = createSnackbarData(snackbarDataPackage, resourceDataPackage);
+
+                snackbarContainer.MaterialSnackbar.showSnackbar(dataForSnackbar);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    } else {
+        resourceDataPackage.cacheRef.delete(resourceDataPackage.resource)
+            .then(() => {
+                let snackbarContainer = document.querySelector('.mdl-snackbar');
+                let dataForSnackbar = createSnackbarData(snackbarDataPackage, resourceDataPackage);
+
+                snackbarContainer.MaterialSnackbar.showSnackbar(dataForSnackbar);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+}
+
 let shoppingCartWithBadge = document.querySelector('.shopping-cart-with-badge > .mdl-badge');
 let shoppingCartList = document.querySelector('.mdl-menu');
 
@@ -241,7 +307,9 @@ window.onload = (event) => {
         let cardElementSaveAction = document.createElement('a');
         cardElementSaveAction.title = 'Save for offline access';
         cardElementSaveAction.className = 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect';
-        cardElementSaveAction.textContent = 'SAVE';
+        cardElementSaveAction.textContent = isItemInLocalStorageCollection(COLLECTION_NAMES.SAVED_FOR_LATER, product.id) ?
+            'UNSAVE' :
+            'SAVE';
         cardElementSaveAction.fontWeight = 'bold';
         cardElementSaveAction.style.backgroundColor = 'orange';
         cardElementSaveAction.style.color = 'white';
@@ -256,6 +324,70 @@ window.onload = (event) => {
         cardElementSaveAction.appendChild(saveBtnIcon);
 
         /* CLICK EVENT HANDLER FOR THE SAVE BUTTON GOES HERE */
+        cardElementSaveAction.onclick = (clickEvent) => {
+
+            let isSaved = isItemInLocalStorageCollection(COLLECTION_NAMES.SAVED_FOR_LATER, product.id);
+
+            if (isSaved) {
+                removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.SAVED_FOR_LATER, product.id);
+                cardElementSaveAction.textContent = 'SAVE';
+            } else {
+                addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.SAVED_FOR_LATER, product.id, product);
+                cardElementSaveAction.textContent = 'UNSAVE';
+            }
+
+            cardElementSaveAction.appendChild(saveBtnIcon);
+
+            // On-Demand Caching
+            if ('caches' in window) {
+                caches.open('saved-for-later')
+                    .then((cache) => {
+                        if (isSaved) { // Already saved, so remove entry from 
+                            // cache and localStorage, for this button click
+                            let cacheRelatedData = {
+                                cacheRef: cache,
+                                resource: product.imageUrl
+                            };
+
+                            let snackbarRelatedData = {
+                                message: `Removed "${product.name}" from saved collection`,
+                                timeout: 3000,
+                                actionHandlerData: {
+                                    undoActionMethodRef: addNewItemToCollectionInLocalStorage,
+                                    localStorageCollectionName: COLLECTION_NAMES.SAVED_FOR_LATER,
+                                    productId: product.id,
+                                    productData: product,
+                                    undoSuccessMsg: `Added "${product.name}" back to saved collection`,
+                                    undoFailureMsg: `Error adding "${product.name}" from saved collection`
+                                },
+                                actionLabel: 'UNDO'
+                            };
+                            cacheAddRemoveAndUndoWithSnackbar(false /* isAdd */ , cacheRelatedData, snackbarRelatedData);
+                        } else { // Not saved, so add to localStorage and cache
+                            let cacheRelatedData = {
+                                cacheRef: cache,
+                                resource: product.imageUrl
+                            };
+
+                            let snackbarRelatedData = {
+                                message: `Saved "${product.name}" for later`,
+                                timeout: 3000,
+                                actionHandlerData: {
+                                    undoActionMethodRef: removeItemFromCollectionInLocalStorage,
+                                    localStorageCollectionName: COLLECTION_NAMES.SAVED_FOR_LATER,
+                                    productId: product.id,
+                                    productData: {},
+                                    undoSuccessMsg: `Removed "${product.name}" from saved collection`,
+                                    undoFailureMsg: `Error removing "${product.name}" from saved collection`
+                                },
+                                actionLabel: 'UNDO'
+                            };
+                            cacheAddRemoveAndUndoWithSnackbar(true /* isAdd */ , cacheRelatedData, snackbarRelatedData);
+                        }
+                    });
+            }
+
+        };
 
         // componentHandler.upgradeElement(cardElementSaveAction);
         cardElementActions.appendChild(cardElementSaveAction);
