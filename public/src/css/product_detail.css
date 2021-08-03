@@ -1,0 +1,69 @@
+.product-image {
+    width: 100vw!important;
+    /* height: 40vh; */
+}
+
+.action-btn-collection {
+    /* width: 90vw; */
+    margin: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    /* background-color: bisque; */
+}
+
+.product-title {
+    text-align: center;
+    padding-top: 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.65rem;
+    font-weight: 700;
+    line-height: 2.85rem;
+    /* background-color: rgb(124, 98, 58); */
+    color: rgb(128, 90, 41);
+}
+
+.product-price {
+    text-align: center;
+    padding-top: 1.5rem;
+    font-family: 'Style Script', cursive;
+    font-size: 1.65rem;
+    color: rgb(11, 90, 11);
+}
+
+.product-description {
+    text-align: center;
+    margin: auto;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 1.35rem;
+    color: rgb(110, 104, 43);
+    padding: 1rem 1.5rem;
+    /* background-color: rgb(123, 128, 67); */
+}
+
+.btns-title-divider {
+    width: 60vw;
+    margin: auto;
+    border-style: solid;
+    border-width: 1rem 0 0 0;
+    border-color: rgb(109, 87, 58);
+}
+
+.title-price-divider {
+    width: 40vw;
+    margin: auto;
+    border-style: solid;
+    border-width: 0.75rem 0 0 0;
+    border-color: rgb(124, 102, 74);
+}
+
+.price-description-divider {
+    width: 20vw;
+    margin: auto;
+    border-style: dotted;
+    border-width: 1rem 0 0 0;
+    border-color: rgba(163, 169, 72, 1);
+}

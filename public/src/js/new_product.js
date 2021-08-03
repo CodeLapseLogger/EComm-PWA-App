@@ -1,6 +1,6 @@
-let topImageElement = document.getElementById('top-image');
-let productShowcase = document.getElementById('product-showcase');
-let addProductFABElement = document.querySelector('.mdl-button--fab');
+// let topImageElement = document.getElementById('top-image');
+// let productShowcase = document.getElementById('product-showcase');
+// let addProductFABElement = document.querySelector('.mdl-button--fab');
 let productDataFormElement = document.querySelector('form');
 
 let headerTitleElement = document.querySelector('.mdl-layout__header .mdl-layout-title');
@@ -10,49 +10,86 @@ let drawerElement = document.querySelector('.mdl-layout__drawer');
 let formSubmitBtnElement = document.querySelector('.form-submit-btn');
 let formCloseBtnElement = document.querySelector('.form-close-btn');
 
-let originalHeaderTitle = headerTitleElement.textContent;
-
-console.log(
-    `
-    drawer: ${drawerElement.style.display},
-    headerNav: ${headerNavElement.style.display},
-    topImage: ${topImageElement.style.display},
-    productShowcase: ${productShowcase.style.display},
-    addProductFAB: ${addProductFABElement.style.display}
-    `
-);
-
-// Store original element state, to be restored for the
-// form close/cancel event
-let originalElementDisplayAttrVals = {
-    drawer: 'flex',
-    headerNav: 'flex',
-    topImage: 'block',
-    productCollection: 'block',
-    addProductFAB: 'inline-block',
+// Text to be displayed
+let loadingSpinnerText = {
+    ON_SUBMIT: 'Adding new product...',
+    ON_CLOSE: 'Loading...'
 }
 
+// Set the title
+headerTitleElement.textContent = 'Add new product';
+
+formCloseBtnElement.style.position = 'relative';
+formCloseBtnElement.style.display = 'block';
+formCloseBtnElement.style.left = '0';
+
+formSubmitBtnElement.onclick = formSubmitCallback;
+formCloseBtnElement.onclick = formCloseCallback;
 // let drawerButtonElement = document.querySelector('.mdl-layout__header .mdl-layout__drawer-button');
 
 // Callback for the click event of form submit button
 function formSubmitCallback(event) {
     event.preventDefault();
-}
 
-// Callback for the click event of form close button
-function formCloseCallback(event) {
+    let formElements = document.querySelectorAll('input');
 
-    event.preventDefault();
+    let newProductEntry = {
+        id: '',
+        name: '',
+        price: '',
+        description: '',
+        imageUrl: ''
+    }
 
-    // Change the title back to home page title
-    headerTitleElement.textContent = originalHeaderTitle;
 
-    // Unhide home page elements, by resetting their display attribute values
-    drawerElement.style.display = originalElementDisplayAttrVals.drawer;
-    headerNavElement.style.display = originalElementDisplayAttrVals.headerNav;
-    topImageElement.style.display = originalElementDisplayAttrVals.topImage;
-    productShowcase.style.display = originalElementDisplayAttrVals.productCollection;
-    addProductFABElement.style.display = originalElementDisplayAttrVals.addProductFAB;
+    newProductEntry.id = getNewProdId().toString();
+    console.log(`New product entry id: ${newProductEntry.id}`);
+
+    let formFieldValueData = {};
+    for (let formElement of formElements) {
+        console.log(`New product attribute value (form element value): ${formElement.value}`);
+        formFieldValueData[formElement.name] = formElement.value;
+    }
+
+    for (let fieldName in formFieldValueData) {
+        let indexOfHyphen = fieldName.indexOf('-');
+        let productAttrSubstr = fieldName.substring(indexOfHyphen + 1);
+
+        indexOfHyphen = productAttrSubstr.indexOf('-');
+
+        // Code to convert the product attribute name to camelCase
+        if (indexOfHyphen != -1) {
+            // Replace hyphen (in image-url)
+            productAttrSubstr = productAttrSubstr.replace('-', '');
+            // then, capitalize the character currently in the place of replaced hyphen (done in line above)
+            let capitalizedCharAfterReplacedHyphen = productAttrSubstr[indexOfHyphen].toUpperCase();
+            // finally, update the lower case character of original string (productAttrSubstr),
+            // currently in the replaced hyphen's index position with the capitalized character (previous line)
+            // to make it camel-cased string.
+            productAttrSubstr = productAttrSubstr.replace(productAttrSubstr[indexOfHyphen], capitalizedCharAfterReplacedHyphen[0]);
+        }
+
+        console.log(`New product form field name: ${productAttrSubstr}`);
+        // Set the form field value in the new product entry object
+        if (productAttrSubstr === 'price') {
+            let priceWithCurrencySymbol = '$';
+            let productPriceAsFixedDecimalNumber = Number(formFieldValueData[fieldName]).toFixed(2);
+            priceWithCurrencySymbol = priceWithCurrencySymbol + productPriceAsFixedDecimalNumber.toString();
+
+            newProductEntry[productAttrSubstr] = priceWithCurrencySymbol;
+        } else if ((productAttrSubstr === 'name') /*&& (formFieldValueData[fieldName].length > 15)*/ ) {
+            newProductEntry[productAttrSubstr] = formFieldValueData[fieldName];
+            // newProductEntry[productAttrSubstr] = formFieldValueData[fieldName].substring(0, 15) + '...';
+        } else {
+            newProductEntry[productAttrSubstr] = formFieldValueData[fieldName];
+        }
+
+    }
+
+    // At this point the form data has been extracted and stored
+    // on to the newProductEntry object. Time to add it to localStorage
+    // products collection.
+    addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.PRODUCTS, newProductEntry.id, newProductEntry);
 
     // Hide the input form for product data
     productDataFormElement.style.display = 'none';
@@ -60,28 +97,30 @@ function formCloseCallback(event) {
     formCloseBtnElement.style.position = 'absolute';
     formCloseBtnElement.style.left = '-100vw';
 
+    // Display loading spinner and the text
+    spinnerTextElement.textContent = loadingSpinnerText.ON_SUBMIT;
+    spinnerTextElement.style.display = 'block';
+    spinnerElement.classList.add('is-active');
+
+    // Navigate to the 
+    window.location.href = '/';
 }
 
-// Add click event handler to the FAB
-addProductFABElement.onclick = (event) => {
-    // Change the title
-    headerTitleElement.textContent = 'Add new product';
+// Callback for the click event of form close button
+function formCloseCallback(event) {
 
-    // Hide unwanted elements on the page
-    // drawerButtonElement.style.display = 'none';
-    drawerElement.style.display = 'none';
-    headerNavElement.style.display = 'none';
-    topImageElement.style.display = 'none';
-    productShowcase.style.display = 'none';
-    addProductFABElement.style.display = 'none';
+    event.preventDefault();
 
-    // Display the input form for product data
-    productDataFormElement.style.display = 'block';
+    // Hide the input form for product data
+    productDataFormElement.style.display = 'none';
+    formCloseBtnElement.style.display = 'inline-block';
+    formCloseBtnElement.style.position = 'absolute';
+    formCloseBtnElement.style.left = '-100vw';
 
-    formCloseBtnElement.style.position = 'relative';
-    formCloseBtnElement.style.display = 'block';
-    formCloseBtnElement.style.left = '0';
+    // Display loading spinner and the text
+    spinnerTextElement.textContent = loadingSpinnerText.ON_CLOSE;
+    spinnerTextElement.style.display = 'block';
+    spinnerElement.classList.add('is-active');
 
-    formSubmitBtnElement.onclick = formSubmitCallback;
-    formCloseBtnElement.onclick = formCloseCallback;
-};
+    window.location.href = '/';
+}

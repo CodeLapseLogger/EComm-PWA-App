@@ -50,6 +50,20 @@ let COLLECTION_NAMES = {
     SAVED_FOR_LATER: 'saved-for-later'
 };
 
+// Method to get new id for new product
+function getNewProdId() {
+    // When getting a new id for new product, checks if an entry exists
+    // in the local storage. If valid, then it is set to that value, and
+    // if it is null (no entry), initialized to 4 (as there are 3 pre-existing
+    // product entries).
+    let newProdId = JSON.parse(localStorage.getItem('current_prod_id')) ?
+        JSON.parse(localStorage.getItem('current_prod_id')) :
+        4;
+    localStorage.setItem('current_prod_id', JSON.stringify(newProdId + 1)); // Increment for next new product
+
+    return newProdId;
+}
+
 // Add Collection to local storage
 function addCollectionToLocalStorage(collectionName, collectionData) {
     localStorage.setItem(collectionName, JSON.stringify(collectionData));
@@ -79,7 +93,7 @@ function getItemFromCollectionInLocalStorage(collectionName, productId) {
 // Get size of given collection
 function getSizeOfCollectionInLocalStorage(collectionName) {
     let currentDataInCollection = JSON.parse(localStorage.getItem(collectionName));
-
+    console.log(`getSizeOfCollectionInLocalStorage: currentDataInCollection - ${currentDataInCollection}`);
     return Object.values(currentDataInCollection).length;
 }
 
@@ -111,13 +125,13 @@ function removeItemFromCollectionInLocalStorage(collectionName, productId) {
 
 }
 
+// Get current collection data from localStorage
 let currentProductCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.PRODUCTS);
 let currentFavoritesCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.FAVORITES);
 let currentShoppingCartCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
 let currentSavedForLaterCollectionData = getCollectionFromLocalStorage(COLLECTION_NAMES.SAVED_FOR_LATER);
 
-
-
+// Initialize localStorage with appropriate collection data, upon page load
 addCollectionToLocalStorage(
     COLLECTION_NAMES.PRODUCTS,
     (currentProductCollectionData) ?

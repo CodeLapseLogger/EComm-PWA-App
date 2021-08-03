@@ -1,6 +1,6 @@
 let CACHE_VERSION = {
-    STATIC: '13',
-    DYNAMIC: '10'
+    STATIC: '30',
+    DYNAMIC: '50'
 }
 
 let CACHE_LIST = {
@@ -13,17 +13,18 @@ let STATIC_RESOURCE_LIST = [
     '/',
     '/index.html',
     '/offline/index.html',
-    'https://fonts.googleapis.com/icon?family=Material+Icons',
-    'https://code.getmdl.io/1.3.0/material.brown-orange.min.css',
+    '/src/images/empty-store.jpg',
+    '/src/images/empty-cart.jpg',
+    '/src/images/offline.jpg',
+    '/src/images/online-store-large-1100x513.png',
     '/src/css/home.css',
-    '/src/css/new_product.css',
-    'https://code.getmdl.io/1.3.0/material.min.js',
     '/src/js/app.js',
     '/src/js/product_listing.js',
-    '/src/js/new_product.js',
-    '/src/images/online-store-large-1100x513.png',
-    '/src/images/offline.jpg',
-    '/src/images/empty-store.jpg'
+    '/src/js/offline.js',
+    'https://fonts.googleapis.com/icon?family=Material+Icons',
+    'https://code.getmdl.io/1.3.0/material.brown-orange.min.css',
+    'https://fonts.googleapis.com/css2?family=Special+Elite&display=swap',
+    'https://code.getmdl.io/1.3.0/material.min.js',
 ];
 
 self.addEventListener('install', (event) => {
@@ -71,16 +72,16 @@ self.addEventListener('fetch', (event) => {
     } else {
         console.log(`[Service Worker Log] Serving with cache with network fallback: ${event.request.url}`);
         event.respondWith(
-            caches.match(event.request)
+            caches.match(event.request.url)
             .then((response) => {
-                if (response) {
+                if (response /*&& response.type !== "opaque"*/ ) {
                     return response;
                 } else {
                     return fetch(event.request)
                         .then((res) => {
                             caches.open(CACHE_LIST.DYNAMIC_CACHE)
                                 .then((cache) => {
-                                    cache.put(event.request, res.clone());
+                                    cache.put(event.request.url, res.clone());
                                     return res;
                                 })
                         })

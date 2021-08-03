@@ -16,7 +16,6 @@
 
     <!-- App-specific stylesheets -->
     <link rel="stylesheet" href="/src/css/home.css">
-    <link rel="stylesheet" href="/src/css/new_product.css">
 
     <!-- App manifest -->
     <link rel="manifest" href="/manifest.json">
@@ -106,37 +105,16 @@
                     <div class="mdl-snackbar__action" type="button"></div>
                 </div>
 
-                <!-- Product add form - Hidden by default and displayed upon clicking the '+' FAB -->
-                <form action="#">
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" name="product-name" id="prod-name">
-                        <label class="mdl-textfield__label" for="prod-name">Name</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" name="product-price" id="prod-price">
-                        <label class="mdl-textfield__label" for="prod-price">Price</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" name="product-description" id="prod-description">
-                        <label class="mdl-textfield__label" for="prod-description">Description</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" name="product-image-url" id="prod-image-url">
-                        <label class="mdl-textfield__label" for="prod-image-url">Image-Url</label>
-                    </div>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent form-submit-btn" type="submit">Add Product</button>
-                </form>
-
-                <!-- Close button for the form to cancel the product add
-                     Hidden by default and only displayed with the product add form. -->
-                <button class="mdl-button mdl-js-button mdl-button--icon form-close-btn">
-                    <i class="material-icons">clear</i>
-                  </button>
+                <!-- Spinner to be displayed when app carries out the network request -->
+                <p class="loading-spinner-text">Loading...</p>
+                <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner loading-spinner"></div>
 
                 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
                 <script src="/src/js/app.js"></script>
+                <script src="/src/js/utilities/snackbar.js"></script>
+                <script src="/src/js/utilities/loadingspinner.js"></script>
+                <script src="/src/js/utilities/product_actions/shoppingcart_actions.js"></script>
                 <script src="/src/js/favorites_listing.js"></script>
-                <script src="/src/js/new_product.js"></script>
             </div>
         </main>
     </div>

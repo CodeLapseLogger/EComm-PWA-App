@@ -3,9 +3,8 @@ body {
     margin: 0;
 }
 
-form {
+.hide-element {
     display: none;
-    padding: 0 2.15rem;
 }
 
 .circle-border-with-background {
@@ -220,6 +219,20 @@ form {
 
 .resize-non-empty-shopping-cart .mdl-menu__item {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
+.loading-spinner-text {
+    text-align: center;
+    color: darkgoldenrod;
+    font-family: 'Special Elite', cursive;
+    font-size: 1.9rem;
+    font-weight: bold;
+    display: none;
+    padding: 37vh 0.5rem 0.5rem;
+}
+
+.loading-spinner {
+    margin: 0 45vw;
 }
 
 

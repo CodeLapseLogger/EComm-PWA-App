@@ -6,76 +6,23 @@ function isFavorite(productEntry) {
     return isItemInLocalStorageCollection(COLLECTION_NAMES.FAVORITES, productEntry.id);
 }
 
-// Method with logic to prepare data for snackbar display
-function createSnackbarData(snackbarRelatedData, resourceData) {
-    let data = {
-        message: snackbarRelatedData.message,
-        timeout: snackbarRelatedData.timeout,
-        actionHandler: (actionBtnClickEvnt) => {
+let topImageElement = document.getElementById('top-image');
+let productListings = document.getElementById('product-showcase');
 
-            let snackbarData = {};
-
-            // let isSavedProdDeleted = prodsSavedForLater.delete(product.id);
-            try {
-                if (snackbarRelatedData.actionHandlerData.undoActionMethodRef === removeProductItemFromLocalStorageCollection) {
-                    resourceData.cacheRef.delete(resourceData.resource);
-                    snackbarRelatedData.actionHandlerData.undoActionMethodRef(snackbarRelatedData.actionHandlerData.localStorageCollectionName, snackbarRelatedData.actionHandlerData.productId);
-                } else {
-                    resourceData.cacheRef.add(resourceData.resource);
-                    snackbarRelatedData.actionHandlerData.undoActionMethodRef(snackbarRelatedData.actionHandlerData.localStorageCollectionName, snackbarRelatedData.actionHandlerData.productId, snackbarRelatedData.actionHandlerData.productData);
-                }
-
-                snackbarData = {
-                    message: snackbarRelatedData.actionHandlerData.undoSuccessMsg,
-                    timeout: snackbarRelatedData.timeout
-                };
-            } catch (err) {
-                snackbarData = {
-                    message: snackbarRelatedData.actionHandlerData.undoFailureMsg,
-                    timeout: snackbarRelatedData.timeout
-                }
-            } finally {
-                snackbarContainer.MaterialSnackbar.showSnackbar(snackbarData);
-            }
-        },
-        actionText: snackbarRelatedData.actionLabel
-    };
-    return data;
-}
-
-// Method with logic to add/remove a product related entries from cache and localStorage
-// and accordingly display the success/failure message in a snackbar.
-function cacheAddRemoveAndUndoWithSnackbar(isAdd, resourceDataPackage, snackbarDataPackage) {
-
-    if (isAdd) {
-        resourceDataPackage.cacheRef.add(resourceDataPackage.resource)
-            .then(() => {
-                let snackbarContainer = document.querySelector('.mdl-snackbar');
-                let dataForSnackbar = createSnackbarData(snackbarDataPackage, resourceDataPackage);
-
-                snackbarContainer.MaterialSnackbar.showSnackbar(dataForSnackbar);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    } else {
-        resourceDataPackage.cacheRef.delete(resourceDataPackage.resource)
-            .then(() => {
-                let snackbarContainer = document.querySelector('.mdl-snackbar');
-                let dataForSnackbar = createSnackbarData(snackbarDataPackage, resourceDataPackage);
-
-                snackbarContainer.MaterialSnackbar.showSnackbar(dataForSnackbar);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-}
+let elementListToHideUnhide = [productListContainer, topImageElement, productListings];
 
 let shoppingCartWithBadge = document.querySelector('.shopping-cart-with-badge > .mdl-badge');
 let shoppingCartList = document.querySelector('.mdl-menu');
 
 window.onload = (event) => {
+
+    // Launch loading spinner upon page load
+    // and hide/stop it after 1 second. 
+    launchLoadingSpinner(elementListToHideUnhide);
+    let stopLoadSpinnerWrapper = () => { // For setTimeout argument
+        stopLoadingSpinner(elementListToHideUnhide);
+    }
+    setTimeout(stopLoadSpinnerWrapper, 1000);
 
     let currentShoppingCartCollectionSize = getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
 
@@ -259,6 +206,10 @@ window.onload = (event) => {
         // Span element to hold the product card
         let cardSpanElement = document.createElement('span');
         cardSpanElement.className = 'mdl-list__item-primary-content';
+        cardSpanElement.onclick = (event) => {
+            launchLoadingSpinner(elementListToHideUnhide);
+            window.location.href = `/product_detail?id=${product.id}`;
+        };
 
         // Div element to be styled as an MDL (Material Design Lite) Card Component
         let cardElement = document.createElement('div');
@@ -276,7 +227,14 @@ window.onload = (event) => {
         cardElementProductPrice.className = 'mdl-card__title-text product-title-text product-title-price';
 
         // Product name and price in text nodes
-        let cardElementProductTitleText = document.createTextNode(product.name);
+        let cardElementProductTitleText = document.createTextNode(
+            // Display appropriate text based on its length,
+            // for a consistent product data presentation
+            // across the list of product cards.
+            product.name.length > 15 ?
+            product.name.substring(0, 15) + '...' :
+            product.name
+        );
         cardElementProductTitle.appendChild(cardElementProductTitleText);
 
         let cardElementProductPriceText = document.createTextNode(product.price);
