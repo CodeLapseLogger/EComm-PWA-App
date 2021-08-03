@@ -6,6 +6,7 @@ Currently, the code makes:
    (i) Static Caching
    (ii) Dynamic Caching
    (iii) Cache Versioning
+   (iv) On-Demand Caching
 
 Rest of the features will be added incrementally, as this repo is part of a PWA series on YouTube.
 
