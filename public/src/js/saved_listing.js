@@ -11,9 +11,6 @@ let productListings = document.getElementById('product-showcase');
 
 let elementListToHideUnhide = [productListContainer, topImageElement, productListings];
 
-let shoppingCartWithBadge = document.querySelector('.shopping-cart-with-badge > .mdl-badge');
-let shoppingCartList = document.querySelector('.mdl-menu');
-
 window.onload = (event) => {
 
     // Launch loading spinner upon page load
@@ -38,10 +35,10 @@ window.onload = (event) => {
         // Span element to hold the product card
         let cardSpanElement = document.createElement('span');
         cardSpanElement.className = 'mdl-list__item-primary-content';
-        cardSpanElement.onclick = (event) => {
-            launchLoadingSpinner(elementListToHideUnhide);
-            window.location.href = `/product_detail?id=${product.id}`;
-        };
+        // cardSpanElement.onclick = (event) => {
+        //     launchLoadingSpinner(elementListToHideUnhide);
+        //     window.location.href = `/product_detail?id=${product.id}`;
+        // };
 
         // Div element to be styled as an MDL (Material Design Lite) Card Component
         let cardElement = document.createElement('div');
@@ -49,45 +46,14 @@ window.onload = (event) => {
         cardElement.className = 'mdl-card mdl-shadow--2dp product-card';
 
         // Div element cluster to create MDL Card Component
-        let cardElementTitle = document.createElement('div');
-        cardElementTitle.className = 'mdl-card__title product-card-title';
-        cardElementTitle.style.background = `url(${product.imageUrl}) center/cover`;
-
-        let cardElementProductTitle = document.createElement('h2');
-        cardElementProductTitle.className = 'mdl-card__title-text product-title-text product-title-name';
-
-        let cardElementProductPrice = document.createElement('h2');
-        cardElementProductPrice.className = 'mdl-card__title-text product-title-text product-title-price';
-
-        // Product name and price in text nodes
-        let cardElementProductTitleText = document.createTextNode(
-            // Display appropriate text based on its length,
-            // for a consistent product data presentation
-            // across the list of product cards.
-            product.name.length > 15 ?
-            product.name.substring(0, 15) + '...' :
-            product.name
-        );
-        cardElementProductTitle.appendChild(cardElementProductTitleText);
-
-        let cardElementProductPriceText = document.createTextNode(product.price);
-        cardElementProductPrice.appendChild(cardElementProductPriceText);
-
-
-        // componentHandler.upgradeElement(cardElementProductTitle);
-        // componentHandler.upgradeElement(cardElementProductPrice);
-        cardElementTitle.appendChild(cardElementProductTitle);
-        cardElementTitle.appendChild(cardElementProductPrice);
+        let cardElementTitle = createProductCardTitleAndPriceElement(product);
 
         // Append card title element to card component/element
         // componentHandler.upgradeElement(cardElementTitle);
         cardElement.appendChild(cardElementTitle);
 
         // Div element to hold description/supporting text
-        let cardElementDescription = document.createElement('div');
-        cardElementDescription.className = 'mdl-card__supporting-text';
-        let cardElementDescriptionText = document.createTextNode(product.description);
-        cardElementDescription.appendChild(cardElementDescriptionText);
+        let cardElementDescription = createProductDescriptionElement(product);
 
         // componentHandler.upgradeElement(cardElementDescription);
         cardElement.appendChild(cardElementDescription);
