@@ -176,3 +176,23 @@ window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
     appInstallPrompt = event; // For later use
 })
+
+// Function to show app install prompt to the user.
+// Enables display of prompt at a desired point in
+// the app flow.
+function showAppInstallPrompt() {
+    if (appInstallPrompt) {
+        appInstallPrompt.prompt();
+
+        appInstallPrompt.userChoice.then((endResult) => {
+            console.log(`User's app install choice: ${endResult.outcome}`);
+            if (endResult.outcome === 'dismissed') {
+                console.log(`User doesn't want to install the app !`);
+            } else {
+                console.log(`User installed the app !`);
+            }
+        });
+
+        appInstallPrompt = null;
+    }
+}
