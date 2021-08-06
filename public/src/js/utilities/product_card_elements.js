@@ -1,6 +1,6 @@
 // Function to create product card element/component,
 // with its title and price
-function createProductCardTitleAndPriceElement(inputProduct) {
+function createProductCardTitleAndPriceElement(inputCollectionName, inputProduct) {
     // Div element cluster to create MDL Card Component
     let cardElementForTitleAndPrice = document.createElement('div');
     cardElementForTitleAndPrice.className = 'mdl-card__title product-card-title';
@@ -33,7 +33,7 @@ function createProductCardTitleAndPriceElement(inputProduct) {
     cardElementForTitleAndPrice.appendChild(cardElementProductPrice);
     cardElementForTitleAndPrice.onclick = (event) => {
         launchLoadingSpinner(elementListToHideUnhide);
-        window.location.href = `/product_detail?id=${inputProduct.id}`;
+        window.location.href = `/product_detail?id=${inputProduct.id}&list=${inputCollectionName}`;
     };
 
     return cardElementForTitleAndPrice;

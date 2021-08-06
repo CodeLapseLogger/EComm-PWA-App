@@ -205,7 +205,7 @@ function setupProductListAndPopulateProductData(inputCollectionName, isNotSavedP
         cardElement.className = 'mdl-card mdl-shadow--2dp product-card';
 
         // Div element cluster to create MDL Card Component
-        let cardElementTitleAndPrice = createProductCardTitleAndPriceElement(product);
+        let cardElementTitleAndPrice = createProductCardTitleAndPriceElement(inputCollectionName, product);
 
         // Append card title element to card component/element
         // componentHandler.upgradeElement(cardElementTitle);

@@ -22,6 +22,22 @@ let elementListToHideUnhide = [
 
 window.onload = (event) => {
 
+    console.log(`current url: ${window.location.href}`)
+    let currentUrl = new URL(window.location.href);
+    let listName = currentUrl.searchParams.get('list');
+
+    // Code to hide action buttons for favorites, saved for later pages,
+    // based on the presence of respective collection names in the url.
+    if (listName === 'favorites') {
+        editButtonElement.classList.add('hide-element');
+        deleteButtonElement.classList.add('hide-element');
+    } else if (listName === 'saved-for-later') {
+        shoppingCartButtonElement.classList.add('hide-element');
+        favoriteButtonElement.classList.add('hide-element');
+        editButtonElement.classList.add('hide-element');
+        deleteButtonElement.classList.add('hide-element');
+    }
+
     // Launch loading spinner upon page load
     // and hide/stop it after 1 second. 
     launchLoadingSpinner(elementListToHideUnhide);
@@ -29,9 +45,6 @@ window.onload = (event) => {
         stopLoadingSpinner(elementListToHideUnhide);
     }
     setTimeout(stopLoadSpinnerWrapper, 1000);
-
-    console.log(`current url: ${window.location.href}`)
-    let currentUrl = new URL(window.location.href);
 
     // Get rid of the '/' before the query string in the url
     let splitSubStrArr = currentUrl.pathname.split('/');
