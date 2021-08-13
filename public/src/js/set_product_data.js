@@ -12,20 +12,71 @@ let formCloseBtnElement = document.querySelector('.form-close-btn');
 
 // Text to be displayed
 let loadingSpinnerText = {
-    ON_SUBMIT: 'Adding new product...',
+    ON_ADD_SUBMIT: 'Adding new product...',
+    ON_EDIT_SUBMIT: 'Updating product...',
     ON_CLOSE: 'Loading...'
 }
 
-// Set the title
-headerTitleElement.textContent = 'Add new product';
-
-formCloseBtnElement.style.position = 'relative';
-formCloseBtnElement.style.display = 'block';
-formCloseBtnElement.style.left = '0';
-
-formSubmitBtnElement.onclick = formSubmitCallback;
-formCloseBtnElement.onclick = formCloseCallback;
 // let drawerButtonElement = document.querySelector('.mdl-layout__header .mdl-layout__drawer-button');
+
+// Object with entries of dom elements to hide or unhide during page load
+let elementListToHideUnhide = {
+    formElement: productDataFormElement,
+    formSubmitElement: formSubmitBtnElement,
+    formCloseElement: formCloseBtnElement
+}
+
+// Globals to be accessed in multiple functions
+let currentUrl;
+let isAddProductAction;
+let existingProductId;
+
+window.onload = (event) => {
+
+    // Code to preload form with existing product data,
+    // if the action is to edit product and not to create 
+    // new product. 
+    currentUrl = new URL(window.location.href);
+    isAddProductAction = currentUrl.searchParams.get('isNewProduct'); // 'isNewProduct' origin url: product_listing.js, product_detail.js 
+
+    if (isAddProductAction === 'false') { // check for edit action
+        // Set the title
+        headerTitleElement.textContent = 'Edit product';
+        // Set Button Text
+        formSubmitBtnElement.textContent = 'Update Product';
+        existingProductId = currentUrl.searchParams.get('id');
+        let existingProductData = getItemFromCollectionInLocalStorage(COLLECTION_NAMES.PRODUCTS, existingProductId);
+        preloadFormData(existingProductData);
+    } else { // is an add action
+        // Set the title
+        headerTitleElement.textContent = 'Add new product';
+    }
+
+    formCloseBtnElement.style.position = 'relative';
+    formCloseBtnElement.style.display = 'block';
+    formCloseBtnElement.style.left = '0';
+
+    formSubmitBtnElement.onclick = formSubmitCallback;
+    formCloseBtnElement.onclick = formCloseCallback;
+
+}
+
+// Function to preload form with existing product data
+function preloadFormData(productDataToPreload) {
+    let formInputElements = document.querySelectorAll('input');
+
+    for (let formInputElement of formInputElements) {
+        if (formInputElement.name.includes('name')) {
+            formInputElement.value = productDataToPreload.name;
+        } else if (formInputElement.name.includes('image')) {
+            formInputElement.value = productDataToPreload.imageUrl;
+        } else if (formInputElement.name.includes('price')) {
+            formInputElement.value = productDataToPreload.price.substring(1); // Extract numeric text after '$', the first character. 
+        } else if (formInputElement.name.includes('description')) {
+            formInputElement.value = productDataToPreload.description;
+        }
+    }
+}
 
 // Callback for the click event of form submit button
 function formSubmitCallback(event) {
@@ -42,8 +93,13 @@ function formSubmitCallback(event) {
     }
 
 
-    newProductEntry.id = getNewProdId().toString();
-    console.log(`New product entry id: ${newProductEntry.id}`);
+    if (isAddProductAction === 'true') {
+        newProductEntry.id = getNewProdId().toString();
+        console.log(`New product entry id: ${newProductEntry.id}`);
+    } else { // edit product
+        newProductEntry.id = existingProductId;
+        console.log(`Existing product entry id: ${newProductEntry.id}`);
+    }
 
     let formFieldValueData = {};
     for (let formElement of formElements) {
@@ -98,11 +154,16 @@ function formSubmitCallback(event) {
     formCloseBtnElement.style.left = '-100vw';
 
     // Display loading spinner and the text
-    spinnerTextElement.textContent = loadingSpinnerText.ON_SUBMIT;
+    if (isAddProductAction === 'true') {
+        spinnerTextElement.textContent = loadingSpinnerText.ON_ADD_SUBMIT;
+    } else { // edit action
+        spinnerTextElement.textContent = loadingSpinnerText.ON_EDIT_SUBMIT;
+    }
+
     spinnerTextElement.style.display = 'block';
     spinnerElement.classList.add('is-active');
 
-    // Navigate to the 
+    // Navigate to the product page
     window.location.href = '/';
 }
 

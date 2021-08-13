@@ -175,7 +175,7 @@ window.addEventListener('beforeinstallprompt', (event) => {
     console.log('Got beforeinstallprompt event !');
     event.preventDefault();
     appInstallPrompt = event; // For later use
-})
+});
 
 // Function to show app install prompt to the user.
 // Enables display of prompt at a desired point in

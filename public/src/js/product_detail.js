@@ -76,20 +76,31 @@ window.onload = (event) => {
         'favorite' :
         'favorite_border';
 
-    shoppingCartButtonElement.onclick = (event) => {
-        console.log('[ Product Detail Page ] Clicked on Shopping Cart Button !');
-    };
 
-    favoriteButtonElement.onclick = (event) => {
-        console.log('[ Product Detail Page ] Clicked on Favorite Button !');
-    };
+    // Setting up click event handlers for different product action buttons
+
+    // shoppingCartButtonElement.onclick = (event) => {
+    //     console.log('[ Product Detail Page ] Running click event handler for shopping cart button !');
+
+    // };
+    setupClickEventHandlerForShoppingCardAddButton(shoppingCartButtonElement, productData);
+
+    // favoriteButtonElement.onclick = (event) => {
+    //     console.log('[ Product Detail Page ] Clicked on Favorite Button !');
+    // };
+    setupClickEventHandlerForFavoriteButton(favoriteButtonElement, productData);
 
     editButtonElement.onclick = (event) => {
         console.log('[ Product Detail Page ] Clicked on Edit Button !');
+        launchLoadingSpinner(elementListToHideUnhide);
+        window.location.href = `/set_product_data?isNewProduct=false&id=${productId}`;
     };
 
     deleteButtonElement.onclick = (event) => {
         console.log('[ Product Detail Page ] Clicked on Delete Button !');
+        launchLoadingSpinner(elementListToHideUnhide, 'Deleting product...');
+        removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.PRODUCTS, productId);
+        window.location.href = '/';
     };
 
 

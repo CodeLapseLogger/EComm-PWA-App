@@ -20,7 +20,7 @@ window.onload = (event) => {
 
     addProductFABElement.onclick = (event) => {
         launchLoadingSpinner(elementListToHideUnhide);
-        window.location.href = '/new_product';
+        window.location.href = '/set_product_data?isNewProduct=true';
     };
 
     // For shopping cart button icon at the top right,
