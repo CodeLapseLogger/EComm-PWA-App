@@ -124,6 +124,82 @@ function populateShoppingCartWithItemData() {
         deleteIconElement.className = 'material-icons';
         deleteIconElement.textContent = 'delete';
 
+        // Implement the click event handler for delete button.*************
+        deleteItemIconButton.onclick = (event) => {
+
+            // event.preventDefault();
+
+            // Div for delete spinner text and spinner elements
+            // let cartItemDeleteTextAndSpinnerElement = document.createElement('div');
+            // cartItemDeleteTextAndSpinnerElement.className = 'spinner-and-text';
+            // cartItemDeleteTextAndSpinnerElement.style.flexFlow = 'column wrap';
+            // cartItemDeleteTextAndSpinnerElement.style.display = 'flex';
+            // cartItemDeleteTextAndSpinnerElement.style.alignItems = 'stretch';
+            // cartItemDeleteTextAndSpinnerElement.style.flex = '2 4 auto';
+            // cartItemDeleteTextAndSpinnerElement.style.lineHeight = '1rem';
+
+            // deleteItemIconButton.classList.add('hide-element');
+            // let deleteItemText = document.createElement('p');
+            // deleteItemText.textContent = 'Deleting...';
+            // let deleteSpinnerElement = document.createElement('div');
+            // deleteSpinnerElement.className = 'mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active';
+
+            // cartItemDeleteTextAndSpinnerElement.appendChild(deleteItemText);
+            // cartItemDeleteTextAndSpinnerElement.appendChild(deleteSpinnerElement);
+
+            // cartItemElement.appendChild(cartItemDeleteTextAndSpinnerElement);
+
+            removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, shoppingCartItem.id);
+            currentShoppingCartData = getCollectionFromLocalStorage(COLLECTION_NAMES.SHOPPING_CART);
+            shoppingCartWithBadge.setAttribute('data-badge', `${getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART)}`);
+            runSnackbarCreateDisplayLogicForShoppingCartAddRemoveOperations(shoppingCartItem, false /* isAdd */ );
+            // cartItemElement.classList.add('hide-element'); // Hide element, representing the delete in the
+            // UI.
+
+
+            // Code to re-calculate total cost and display appropriate loading elements.
+            // let totalCostElement = document.querySelector('.total-cart-item-cost');
+            // let tokenizedTotalCostContentArr = totalCostElement.textContent.split(' ');
+            // let totalCostString = tokenizedTotalCostContentArr[1]; // includes the '$' symbol in the string
+            // let currentTotalCostAsString = totalCostString.substring(1);
+            // let currentTotalCostAsNumber = Number.parseFloat(currentTotalCostAsString);
+
+            // totalCostElement.textContent = 'Total: ';
+
+            // Div for total cost re-calculation spinner text and spinner elements
+            // let totalCostRecalculationTextAndSpinnerElement = document.createElement('div');
+            // totalCostRecalculationTextAndSpinnerElement.className = 'spinner-and-text';
+            // totalCostRecalculationTextAndSpinnerElement.style.flexFlow = 'column wrap';
+            // totalCostRecalculationTextAndSpinnerElement.style.display = 'flex';
+            // totalCostRecalculationTextAndSpinnerElement.style.alignItems = 'stretch';
+            // totalCostRecalculationTextAndSpinnerElement.style.flex = '2 4 auto';
+            // totalCostRecalculationTextAndSpinnerElement.style.lineHeight = '1rem';
+
+            // let costRecalculateItemText = document.createElement('p');
+            // costRecalculateItemText.textContent = 'Re-calculating...';
+            // let costRecalculateSpinnerElement = document.createElement('div');
+            // costRecalculateSpinnerElement.className = 'mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active';
+
+            // totalCostRecalculationTextAndSpinnerElement.appendChild(deleteItemText);
+            // totalCostRecalculationTextAndSpinnerElement.appendChild(deleteSpinnerElement);
+
+            // totalCostElement.appendChild(totalCostRecalculationTextAndSpinnerElement);
+
+            // Code to re-compute the total cart cost and refresh the UI content
+            // let recalculatedTotalCost = recalculateTotalCartPrice(
+            //     currentTotalCostAsNumber,
+            /* isCartItemRemove */
+            // true,
+            // shoppingCartItem);
+
+            // let recalculatedTotalCostAsString = recalculatedTotalCost.toFixed(2);
+            // let updatedTotalCostString = 'Total: $' + recalculatedTotalCostAsString;
+
+            // totalCostElement.textContent = updatedTotalCostString;
+
+
+        }
+
         componentHandler.upgradeElement(deleteIconElement);
         deleteItemIconButton.appendChild(deleteIconElement);
         componentHandler.upgradeElement(deleteItemIconButton);
@@ -132,6 +208,30 @@ function populateShoppingCartWithItemData() {
         componentHandler.upgradeElement(cartItemElement);
         shoppingCartList.appendChild(cartItemElement);
     }
+}
+
+// Function to re-calculate total cart price
+function recalculateTotalCartPrice(inputTotalCartPrice /* Number */ , isCartItemRemove /* Boolean */ , inputCartItemData /* Object */ ) {
+
+    let priceComponentOfInputCartItem = computeProductPriceComponent(inputCartItemData);
+    let recalculatedCartPrice;
+
+    if (isCartItemRemove) {
+        recalculatedCartPrice = inputTotalCartPrice - priceComponentOfInputCartItem;
+    } else { // is a cart add operation (not implemented yet from the cart menu)
+        recalculatedCartPrice = inputTotalCartPrice + priceComponentOfInputCartItem;
+    }
+
+    return recalculatedCartPrice;
+}
+
+// Function to compute price component from input product data
+function computeProductPriceComponent(inputProductData) {
+
+    let extractedProductPrice = inputProductData.price.substring(1);
+    let productPriceAsFloat = Number.parseFloat(extractedProductPrice);
+    return (productPriceAsFloat * inputProductData.orderedQuantity);
+
 }
 
 // Function to compute the total cost of current items in cart,
@@ -144,12 +244,7 @@ function computeAndAppendTotalCartCostComponentToShoppingCart() {
     let totalCost = 0.00;
 
     Object.values(currentShoppingCartData).forEach((prodData) => {
-        let prodPriceAsString = prodData.price.substring(1);
-        let prodPriceAsFloat = Number.parseFloat(prodPriceAsString);
-
-        let orderedProductQuantity = prodData.orderedQuantity;
-
-        totalCost += (prodPriceAsFloat * orderedProductQuantity);
+        totalCost += computeProductPriceComponent(prodData);
     });
 
     totalCostTextContentElement.textContent = `Total : $${totalCost}`;

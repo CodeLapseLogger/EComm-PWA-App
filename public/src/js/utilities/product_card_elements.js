@@ -191,7 +191,7 @@ function setupClickEventHandlerForShoppingCardAddButton(inputShoppingCartAddElem
         // Fetch updated data from the shopping cart Map data stucture
         let updatedProductData = getItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, inputProduct.id);
 
-        runSnackbarCreateDisplayLogicForShoppingCartAddOperation(updatedProductData);
+        runSnackbarCreateDisplayLogicForShoppingCartAddRemoveOperations(updatedProductData, true /* isAdd */ );
 
         // Show the app install banner here
         showAppInstallPrompt();

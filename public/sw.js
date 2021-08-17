@@ -1,6 +1,6 @@
 let CACHE_VERSION = {
-    STATIC: '48',
-    DYNAMIC: '74'
+    STATIC: '49',
+    DYNAMIC: '80'
 }
 
 let CACHE_LIST = {

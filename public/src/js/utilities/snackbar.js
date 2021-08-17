@@ -78,31 +78,33 @@ function cacheAddRemoveAndUndoWithSnackbar(isAdd, resourceDataPackage, snackbarD
 // already updated with the appropriate action of add new 
 // product to the cart of updating the quantity of existing
 // cart item.
-function runSnackbarCreateDisplayLogicForShoppingCartAddOperation(inputUpdatedProductData) {
+function runSnackbarCreateDisplayLogicForShoppingCartAddRemoveOperations(inputUpdatedProductData, isAdd) {
     let snackbarContainer = document.querySelector('.mdl-snackbar');
     let data = {
-        message: `'${inputUpdatedProductData.name}' added to the cart - Quantity : ${inputUpdatedProductData.orderedQuantity}`,
+        message: (isAdd) ?
+            `'${inputUpdatedProductData.name}' added to the cart - Quantity : ${inputUpdatedProductData.orderedQuantity}` : `'${inputUpdatedProductData.name}' removed from the cart !`,
         timeout: 3000,
         actionHandler: (actionButtonClickEvent) => {
-            let isProductPopped = removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, inputUpdatedProductData.id);
-            let poppedProductSnackbarData = {};
+            (isAdd) ?
+            removeItemFromCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, inputUpdatedProductData.id):
+                addNewItemToCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART, inputUpdatedProductData.id, inputUpdatedProductData);
 
-            if (isProductPopped) {
-                shoppingCartWithBadge.setAttribute('data-badge', `${getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART)}`);
+            let snackbarDataForCartOperation = {};
 
-                poppedProductSnackbarData = {
-                    message: `Removed item '${inputUpdatedProductData.name}' from the shopping cart !`,
-                    timeout: 3000
-                };
-                console.log(`Popped item from the shopping cart: ${inputUpdatedProductData.name}`); // undo the add operation
-            } else {
-                poppedProductSnackbarData = {
-                    message: `Error removing item '${inputUpdatedProductData.name}' from the shopping cart !`,
-                    timeout: 3000
-                };
-            }
+            shoppingCartWithBadge.setAttribute('data-badge', `${getSizeOfCollectionInLocalStorage(COLLECTION_NAMES.SHOPPING_CART)}`);
 
-            snackbarContainer.MaterialSnackbar.showSnackbar(poppedProductSnackbarData);
+            snackbarDataForCartOperation = {
+                message: (isAdd) ?
+                    `Removed item '${inputUpdatedProductData.name}' from the shopping cart !` : `Added item '${inputUpdatedProductData.name}' back to shopping cart !`,
+                timeout: 3000
+            };
+            console.log(
+                (isAdd) ?
+                `Removed item from the shopping cart: ${inputUpdatedProductData.name}` : // undo the add operation
+                `Added item back to shopping cart: ${inputUpdatedProductData.name}`
+            ); // undo the remove operation
+
+            snackbarContainer.MaterialSnackbar.showSnackbar(snackbarDataForCartOperation);
         },
         actionText: 'Undo'
     };
